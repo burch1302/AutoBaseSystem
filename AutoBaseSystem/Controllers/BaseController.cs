@@ -2,5 +2,6 @@
 
 namespace AutoBaseSystem.Controllers {
     public abstract class BaseController : Controller {
+
     }
 }
