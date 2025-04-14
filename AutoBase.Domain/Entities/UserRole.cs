@@ -5,10 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace AutoBase.Domain.Entities {
-    public class Driver : Entity{
+    public class UserRole : Entity{
         public string Name { get; set; }
-        public string Phone { get; set; }
+        public ICollection<User> Users { get; set; } = new List<User>();
 
-        public ICollection<Ride> Rides { get; set; }
     }
 }
