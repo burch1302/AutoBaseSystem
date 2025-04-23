@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -66,7 +65,7 @@ namespace AutoBaseSystem.Controllers {
 
             var hash = HashPassword(model.Password);
             var user = _context.Users
-                .Include(u => u.Role) // 👈 ОБЯЗАТЕЛЬНО!
+                .Include(u => u.Role)
                 .FirstOrDefault(u => u.Login == model.Login && u.PasswordHash == hash);
 
             if (user == null) {

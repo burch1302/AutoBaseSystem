@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace AutoBaseSystem.Controllers {
-    [Authorize(Roles = "Dispatcher")]
+    [Authorize(Roles = "Dispatcher,Admin")]
     public class RequestController : BaseController {
         private readonly AutoBaseSystemContext _context;
 
