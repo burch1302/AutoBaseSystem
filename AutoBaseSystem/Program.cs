@@ -8,6 +8,14 @@ builder.Services.AddControllersWithViews();
 
 var connectionString = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddDbContext<AutoBaseSystemContext>(opt => opt.UseSqlServer(connectionString));
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddAuthentication("UserCookie")
+    .AddCookie("UserCookie", options => {
+        options.LoginPath = "/Account/Login"; // если не авторизован — редирект
+    });
+
+builder.Services.AddAuthorization();
+
 
 var app = builder.Build();
 
@@ -23,6 +31,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication(); // ?? Должно быть ДО UseAuthorization
+app.UseAuthorization();
 app.UseAuthorization();
 
 app.MapControllerRoute(

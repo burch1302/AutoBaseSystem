@@ -4,6 +4,11 @@ using AutoBaseSystem.Models.Auth;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace AutoBaseSystem.Controllers {
     public class AccountController : BaseController {
@@ -15,7 +20,16 @@ namespace AutoBaseSystem.Controllers {
 
         [HttpGet]
         public IActionResult Register() {
-            return View();
+            var model = new RegisterViewModel();
+
+            if (User.IsInRole("Admin")) {
+                model.Roles = _context.Set<UserRole>()
+                    .Select(r => new SelectListItem {
+                        Value = r.Id.ToString(),
+                        Text = r.Name
+                    }).ToList();
+            }
+            return View(model);
         }
 
         [HttpPost]
@@ -23,16 +37,16 @@ namespace AutoBaseSystem.Controllers {
             if (!ModelState.IsValid) return View(model);
 
             if (_context.Users.Any(u => u.Login == model.Login)) {
-                ModelState.AddModelError("Login", "Такой пользователь уже существует.");
+                ModelState.AddModelError("Login", "Користувач з таким логіном вже існує.");
                 return View(model);
             }
-
-            var defaultRole = _context.Set<UserRole>().FirstOrDefault(r => r.Name == "User");
+            var roleId = model.SelectedRoleId ??
+                _context.Set<UserRole>().FirstOrDefault(r => r.Name == "User")?.Id ?? Guid.NewGuid();
 
             var user = new User {
                 Login = model.Login,
                 PasswordHash = HashPassword(model.Password),
-                RoleId = defaultRole != null ? defaultRole.Id : Guid.NewGuid() // временно
+                RoleId = roleId
             };
 
             _context.Users.Add(user);
@@ -47,18 +61,30 @@ namespace AutoBaseSystem.Controllers {
         }
 
         [HttpPost]
-        public IActionResult Login(LoginViewModel model) {
+        public async Task<IActionResult> Login(LoginViewModel model) {
             if (!ModelState.IsValid) return View(model);
 
             var hash = HashPassword(model.Password);
-            var user = _context.Users.FirstOrDefault(u => u.Login == model.Login && u.PasswordHash == hash);
+            var user = _context.Users
+                .Include(u => u.Role) // 👈 ОБЯЗАТЕЛЬНО!
+                .FirstOrDefault(u => u.Login == model.Login && u.PasswordHash == hash);
 
             if (user == null) {
                 ModelState.AddModelError("", "Неверный логин или пароль");
                 return View(model);
             }
 
-            // Тут позже добавим куки
+            var claims = new List<Claim> {
+                new Claim(ClaimTypes.Name, user.Login),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Role, user.Role?.Name ?? "User")
+            };
+
+            var identity = new ClaimsIdentity(claims, "UserCookie");
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync("UserCookie", principal);
+
             return RedirectToAction("Index", "Home");
         }
 
@@ -67,6 +93,12 @@ namespace AutoBaseSystem.Controllers {
             var bytes = Encoding.UTF8.GetBytes(password);
             var hash = sha256.ComputeHash(bytes);
             return Convert.ToBase64String(hash);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout() {
+            await HttpContext.SignOutAsync("UserCookie");
+            return RedirectToAction("Index", "Home");
         }
     }
 }

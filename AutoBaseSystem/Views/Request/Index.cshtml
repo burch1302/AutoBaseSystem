@@ -1,0 +1,22 @@
+﻿@model List<AutoBase.Domain.Entities.Request>
+
+<h2 class="mb-4">Список заявок</h2>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Дата прибытия</th>
+            <th>Количество пассажиров</th>
+            <th>Категория авто</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var req in Model) {
+            <tr>
+                <td>@req.ArivalTime.ToString("dd.MM.yyyy HH:mm")</td>
+                <td>@req.PassengersCount</td>
+                <td>@req.CarCategory?.Name</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace AutoBaseSystem.Models.Auth {
     public class RegisterViewModel {
@@ -13,5 +14,9 @@ namespace AutoBaseSystem.Models.Auth {
         [Compare("Password", ErrorMessage = "Пароли не совпадают")]
         [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; }
+
+        public Guid? SelectedRoleId { get; set; }
+
+        public List<SelectListItem> Roles { get; set; } = new List<SelectListItem>();
     }
 }
