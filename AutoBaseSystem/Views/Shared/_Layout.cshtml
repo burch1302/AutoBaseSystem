@@ -36,16 +36,21 @@
                                     <button type="submit" class="nav-link btn btn-link text-white">Выйти</button>
                                 </form>
                             </li>
-                            @if (User.Identity.IsAuthenticated && User.IsInRole("Dispatcher") || User.IsInRole("Admin")) {
+                            @if (User.Identity.IsAuthenticated) {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Ride" asp-action="Index">Рейси</a>
+                                </li>
+                            }
+                            @if (User.Identity.IsAuthenticated) {
                                 <li class="nav-item">
                                     <a class="nav-link" asp-controller="Request" asp-action="Index">Заявки</a>
                                 </li>
                             }
-                            @if (User.IsInRole("Admin")) {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-controller="Account" asp-action="Register">Регистрация</a>
-                            </li>
-}
+                            @if (User.IsInRole("Admin")){
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Account" asp-action="Register">Регистрация</a>
+                                </li>
+                            }
                         } else {
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Account" asp-action="Login">Войти</a>

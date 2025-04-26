@@ -16,9 +16,11 @@ namespace AutoBase.Domain.Entities {
         public Car Car { get; set; }
 
         public DateTime DepartureTime { get; set; }
-        public DateTime ArivalTime { get; set; }
+        public DateTime ArrivalTime { get; set; }
         public bool IsCompleted { get; set; }
 
         public TripReport TripReport { get; set; }
+        public Guid RideStatusId { get; set; }
+        public RideStatus RideStatus { get; set; }
     }
 }

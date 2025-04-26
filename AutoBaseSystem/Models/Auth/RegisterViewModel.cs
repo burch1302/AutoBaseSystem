@@ -11,7 +11,7 @@ namespace AutoBaseSystem.Models.Auth {
         public string Password { get; set; }
 
         [Required]
-        [Compare("Password", ErrorMessage = "Пароли не совпадают")]
+        [Compare("Password", ErrorMessage = "Паролі не співпадають")]
         [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; }
 
