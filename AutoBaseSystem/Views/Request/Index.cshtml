@@ -2,6 +2,10 @@
 
 <h2 class="mb-4">Список заявок</h2>
 
+@if (ViewBag.Error != null) {
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+
 <div class="mb-4">
     <a class="btn btn-primary" asp-controller="Request" asp-action="Create">Створити заявку</a>
 </div>
