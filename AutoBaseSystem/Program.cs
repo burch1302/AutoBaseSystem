@@ -1,3 +1,4 @@
+using Auth0.AspNetCore.Authentication;
 using AutoBase.Domain;
 using AutoBaseSystem.Middlewares;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,16 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthentication("UserCookie")
     .AddCookie("UserCookie", options => {
         options.LoginPath = "/Account/Login"; // если не авторизован — редирект
+    });
+
+// Дополнительная схема авторизации через Auth0 (второй пайплайн)
+builder.Services.AddAuthentication()
+    .AddAuth0WebAppAuthentication("Auth0", options => {
+        options.Domain = builder.Configuration["Auth0:Domain"];
+        options.ClientId = builder.Configuration["Auth0:ClientId"];
+        options.ClientSecret = builder.Configuration["Auth0:ClientSecret"];
+        options.Scope = "openid profile email";
+        options.CallbackPath = "/callback";
     });
 
 builder.Services.AddAuthorization();

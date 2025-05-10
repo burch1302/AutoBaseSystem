@@ -97,6 +97,9 @@ namespace AutoBaseSystem.Controllers {
         [HttpPost]
         public async Task<IActionResult> Logout() {
             await HttpContext.SignOutAsync("UserCookie");
+            await HttpContext.SignOutAsync("Auth0", new AuthenticationProperties {
+                RedirectUri = Url.Action("Index", "Home")
+            });
             return RedirectToAction("Index", "Home");
         }
     }
