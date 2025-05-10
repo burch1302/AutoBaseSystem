@@ -1,4 +1,5 @@
 using AutoBase.Domain;
+using AutoBaseSystem.Middlewares;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,8 +32,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication(); // ?? Должно быть ДО UseAuthorization
-app.UseAuthorization();
+app.UseMiddleware<RequestLoggingMiddleware>();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

@@ -35,10 +35,8 @@
                             <input type="hidden" name="requestId" value="@req.Id" />
                             <select name="statusId" class="form-select form-select-sm" onchange="this.form.submit()">
 
-                                <!-- Сначала текущий статус заявки -->
                                 <option value="@currentStatusId" selected>@currentStatusName</option>
 
-                                <!-- Потом все остальные, кроме текущего -->
                                 @foreach (var status in statuses.Where(s => s.Value != currentStatusId)) {
                                     <option value="@status.Value">@status.Text</option>
                                 }
@@ -46,8 +44,7 @@
                             </select>
                         </form>
                     } else {
-                        @(req.RequestStatus?.Name ?? "Без статусу")
-                        ;
+                        @(req.RequestStatus?.Name ?? "Без статусу");
                     }
                 </td>
 
