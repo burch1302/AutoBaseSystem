@@ -4,6 +4,7 @@ using AutoBase.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AutoBase.Domain.Migrations
 {
     [DbContext(typeof(AutoBaseSystemContext))]
-    partial class AutoBaseSystemContextModelSnapshot : ModelSnapshot
+    [Migration("20250413122520_FinalCascadeFix")]
+    partial class FinalCascadeFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,7 +117,7 @@ namespace AutoBase.Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("ArrivalTime")
+                    b.Property<DateTime>("ArivalTime")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("CarCategoryId")
@@ -129,37 +132,11 @@ namespace AutoBase.Domain.Migrations
                     b.Property<int>("PassengersCount")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("RequestStatusId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CarCategoryId");
 
-                    b.HasIndex("RequestStatusId");
-
                     b.ToTable("Requests");
-                });
-
-            modelBuilder.Entity("AutoBase.Domain.Entities.RequestStatus", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("RequestStatuses");
                 });
 
             modelBuilder.Entity("AutoBase.Domain.Entities.Ride", b =>
@@ -168,7 +145,7 @@ namespace AutoBase.Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("ArrivalTime")
+                    b.Property<DateTime>("ArivalTime")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("CarId")
@@ -192,9 +169,6 @@ namespace AutoBase.Domain.Migrations
                     b.Property<Guid>("RequestId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("RideStatusId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CarId");
@@ -204,30 +178,7 @@ namespace AutoBase.Domain.Migrations
                     b.HasIndex("RequestId")
                         .IsUnique();
 
-                    b.HasIndex("RideStatusId");
-
                     b.ToTable("Rides");
-                });
-
-            modelBuilder.Entity("AutoBase.Domain.Entities.RideStatus", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("RideStatuses");
                 });
 
             modelBuilder.Entity("AutoBase.Domain.Entities.TripReport", b =>
@@ -342,14 +293,7 @@ namespace AutoBase.Domain.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AutoBase.Domain.Entities.RequestStatus", "RequestStatus")
-                        .WithMany("Requests")
-                        .HasForeignKey("RequestStatusId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("CarCategory");
-
-                    b.Navigation("RequestStatus");
                 });
 
             modelBuilder.Entity("AutoBase.Domain.Entities.Ride", b =>
@@ -372,19 +316,11 @@ namespace AutoBase.Domain.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("AutoBase.Domain.Entities.RideStatus", "RideStatus")
-                        .WithMany("Rides")
-                        .HasForeignKey("RideStatusId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.Navigation("Car");
 
                     b.Navigation("Driver");
 
                     b.Navigation("Request");
-
-                    b.Navigation("RideStatus");
                 });
 
             modelBuilder.Entity("AutoBase.Domain.Entities.TripReport", b =>
@@ -426,23 +362,14 @@ namespace AutoBase.Domain.Migrations
 
             modelBuilder.Entity("AutoBase.Domain.Entities.Request", b =>
                 {
-                    b.Navigation("Ride");
-                });
-
-            modelBuilder.Entity("AutoBase.Domain.Entities.RequestStatus", b =>
-                {
-                    b.Navigation("Requests");
+                    b.Navigation("Ride")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("AutoBase.Domain.Entities.Ride", b =>
                 {
                     b.Navigation("TripReport")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("AutoBase.Domain.Entities.RideStatus", b =>
-                {
-                    b.Navigation("Rides");
                 });
 
             modelBuilder.Entity("AutoBase.Domain.Entities.UserRole", b =>

@@ -1,0 +1,22 @@
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
+
+namespace AutoBaseSystem.Models.Auth {
+    public class RegisterViewModel {
+        [Required]
+        public string Login { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+
+        [Required]
+        [Compare("Password", ErrorMessage = "Паролі не співпадають")]
+        [DataType(DataType.Password)]
+        public string ConfirmPassword { get; set; }
+
+        public Guid? SelectedRoleId { get; set; }
+
+        public List<SelectListItem> Roles { get; set; } = new List<SelectListItem>();
+    }
+}

@@ -1,0 +1,31 @@
+﻿@model AutoBaseSystem.Models.RequestViewModel.RequestCreateViewModel
+
+<h2 class="mb-4">Створити заявку</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="ArrivalTime" class="form-label"></label>
+        <input asp-for="ArrivalTime" type="datetime-local" class="form-control" />
+        <span asp-validation-for="ArrivalTime" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PassengersCount" class="form-label"></label>
+        <input asp-for="PassengersCount" type="number" min="1" class="form-control" />
+        <span asp-validation-for="PassengersCount" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CarCategoryId" class="form-label"></label>
+        <select asp-for="CarCategoryId" asp-items="Model.AvailableCategories" class="form-select">
+            <option value="">-- Виберіть категорію --</option>
+        </select>
+        <span asp-validation-for="CarCategoryId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Створити</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

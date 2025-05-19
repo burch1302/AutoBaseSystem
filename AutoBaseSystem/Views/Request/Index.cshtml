@@ -1,0 +1,54 @@
+﻿@model List<AutoBase.Domain.Entities.Request>
+
+<h2 class="mb-4">Список заявок</h2>
+
+@if (ViewBag.Error != null) {
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+
+<div class="mb-4">
+    <a class="btn btn-primary" asp-controller="Request" asp-action="Create">Створити заявку</a>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Дата прибуття</th>
+            <th>Кількість пасажирів</th>
+            <th>Категорія авто</th>
+            <th>Статус заявки</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var req in Model) {
+            <tr>
+                <td>@req.ArrivalTime.ToString("dd.MM.yyyy HH:mm")</td>
+                <td>@req.PassengersCount</td>
+                <td>@req.CarCategory?.Name</td>
+                <td>
+                    @if (User.IsInRole("Dispatcher") || User.IsInRole("Admin")) {
+                        var statuses = ViewBag.Statuses as List<SelectListItem>;
+                        var currentStatusId = req.RequestStatusId.ToString();
+                        var currentStatusName = req.RequestStatus?.Name ?? "Без статусу";
+
+                        <form asp-action="UpdateStatus" method="post" class="d-inline">
+                            <input type="hidden" name="requestId" value="@req.Id" />
+                            <select name="statusId" class="form-select form-select-sm" onchange="this.form.submit()">
+
+                                <option value="@currentStatusId" selected>@currentStatusName</option>
+
+                                @foreach (var status in statuses.Where(s => s.Value != currentStatusId)) {
+                                    <option value="@status.Value">@status.Text</option>
+                                }
+
+                            </select>
+                        </form>
+                    } else {
+                        @(req.RequestStatus?.Name ?? "Без статусу");
+                    }
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>

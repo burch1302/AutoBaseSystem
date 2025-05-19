@@ -1,0 +1,24 @@
+﻿@model List<AutoBase.Domain.Entities.Ride>
+
+<h2 class="mb-4">Список рейсів</h2>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Дата прибуття</th>
+            <th>Авто</th>
+            <th>Номер машини</th>
+            <th>Статус рейсу</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ride in Model) {
+            <tr>
+                <td>@ride.ArrivalTime.ToString("dd.MM.yyyy HH:mm")</td>
+                <td>@ride.Car?.Model</td>
+                <td>@ride.Car?.PlateNumber</td>
+                <td>@ride.RideStatus?.Name</td>
+            </tr>
+        }
+    </tbody>
+</table>

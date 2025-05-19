@@ -1,0 +1,34 @@
+﻿@model AutoBaseSystem.Models.Auth.RegisterViewModel
+
+<h2 class="mb-4">Регистрация</h2>
+
+<form asp-action="Register" method="post">
+    <div class="mb-3">
+        <label asp-for="Login" class="form-label"></label>
+        <input asp-for="Login" class="form-control" />
+        <span asp-validation-for="Login" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Password" class="form-label"></label>
+        <input asp-for="Password" type="password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="ConfirmPassword" class="form-label"></label>
+        <input asp-for="ConfirmPassword" type="password" class="form-control" />
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+    @if (User.IsInRole("Admin")) {
+        <div class="mb-3">
+            <label asp-for="SelectedRoleId" class="form-label">Роль</label>
+            <select asp-for="SelectedRoleId" asp-items="Model.Roles" class="form-select">
+                <option value="">-- Без роли --</option>
+            </select>
+        </div>
+    }
+    <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -14,10 +14,62 @@ namespace AutoBase.Domain {
         public DbSet<Car> Cars { get; set; }
         public DbSet<Ride> Rides { get; set; }
         public DbSet<TripReport> TripReports { get; set; }
+        public DbSet<RequestStatus> RequestStatuses { get; set; }
+        public DbSet<RideStatus> RideStatuses { get; set; }
+
+
 
         public AutoBaseSystemContext(DbContextOptions options) : base(options)
         {
             
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+            base.OnModelCreating(modelBuilder);
+
+            // Отключаем каскадные удаления, чтобы не было конфликтов
+            modelBuilder.Entity<Ride>()
+                .HasOne(r => r.Driver)
+                .WithMany(d => d.Rides)
+                .HasForeignKey(r => r.DriverId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Ride>()
+                .HasOne(r => r.Request)
+                .WithOne(req => req.Ride)
+                .HasForeignKey<Ride>(r => r.RequestId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Car>()
+                .HasOne(c => c.Driver)
+                .WithOne()
+                .HasForeignKey<Car>(c => c.DriverId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Ride>()
+                .HasOne(r => r.Car)
+                .WithMany(c => c.Rides)
+                .HasForeignKey(r => r.CarId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TripReport>()
+                .HasOne(t => t.Ride)
+                .WithOne(r => r.TripReport)
+                .HasForeignKey<TripReport>(t => t.RideId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Request>()
+                .HasOne(r => r.RequestStatus)
+                .WithMany(rs => rs.Requests)
+                .HasForeignKey(r => r.RequestStatusId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Ride>()
+                .HasOne(r => r.RideStatus)
+                .WithMany(rs => rs.Rides)
+                .HasForeignKey(r => r.RideStatusId)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }
