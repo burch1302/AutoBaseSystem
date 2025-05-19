@@ -13,10 +13,10 @@ builder.Services.AddDbContext<AutoBaseSystemContext>(opt => opt.UseSqlServer(con
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthentication("UserCookie")
     .AddCookie("UserCookie", options => {
-        options.LoginPath = "/Account/Login"; // если не авторизован — редирект
+        options.LoginPath = "/Account/Login";
     });
 
-// Дополнительная схема авторизации через Auth0 (второй пайплайн)
+// Auth0 (другий пайплайн)
 builder.Services.AddAuthentication()
     .AddAuth0WebAppAuthentication("Auth0", options => {
         options.Domain = builder.Configuration["Auth0:Domain"];

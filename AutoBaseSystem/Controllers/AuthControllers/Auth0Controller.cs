@@ -20,8 +20,8 @@ public class Auth0Controller : Controller {
         return SignOut(new AuthenticationProperties {
             RedirectUri = "/"
         },
-        "Auth0", // 💡 выходим из Auth0
-        CookieAuthenticationDefaults.AuthenticationScheme // 💡 и локальной куки
+        "Auth0",
+        CookieAuthenticationDefaults.AuthenticationScheme
         );
     }
 }
