@@ -22,7 +22,8 @@ namespace AutoBaseSystem.Middlewares {
             await _next(context);
 
             var statusCode = context.Response.StatusCode;
-            _logger.LogInformation("Outgoing Response: {StatusCode}", statusCode);
+
+            _logger.LogInformation("Outgoing Response: {StatusCode}", statusCode); 
         }
     }
 }
